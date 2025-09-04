@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 // Public routes that don't require authentication
 const PUBLIC_ROUTES = [
   "/register",
+  "/jobs"
 ];
 
 // Check if current route is public

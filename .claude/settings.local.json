@@ -3,7 +3,21 @@
     "allow": [
       "Read(/C:\\Users\\Anathapadmanabhan\\Desktop\\JobHuntClient/**)",
       "Read(/C:\\Users\\Anathapadmanabhan\\Desktop\\JobHuntClient\\components\\JobDetails\\AssessmentsTab/**)",
-      "Read(/C:\\Users\\Anathapadmanabhan\\Desktop\\JobHuntClient\\components\\JobDetails\\AssessmentsTab/**)"
+      "Read(/C:\\Users\\Anathapadmanabhan\\Desktop\\JobHuntClient\\components\\JobDetails\\AssessmentsTab/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\components\\JobDetails/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\components\\JobDetails\\WorkflowTab/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\components\\JobDetails\\AssessmentsTab/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\app/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\app/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\components\\JobDetails\\WorkflowTab/**)",
+      "Bash(npx tsc:*)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\components\\JobDetails\\AssessmentsTab/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient/**)"
     ],
     "deny": [],
     "ask": []
