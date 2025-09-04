@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import CreateAssessmentModal from "./CreateAssessmentModal";
-import "./CreateAssessmentModal.scss";
 
 const AssessmentsTab = () => {
   const [searchTerm, setSearchTerm] = useState("");

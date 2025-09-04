@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/C:\\Users\\Anathapadmanabhan\\Desktop\\JobHuntClient/**)",
+      "Read(/C:\\Users\\Anathapadmanabhan\\Desktop\\JobHuntClient\\components\\JobDetails\\AssessmentsTab/**)",
+      "Read(/C:\\Users\\Anathapadmanabhan\\Desktop\\JobHuntClient\\components\\JobDetails\\AssessmentsTab/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
