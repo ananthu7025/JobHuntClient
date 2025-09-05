@@ -1,12 +1,22 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import CreateJobModal from "./CreateJobModal";
 
 const JobHuntPlatform = () => {
   const [activeView, setActiveView] = useState("grid");
+  const [isCreateJobModalOpen, setIsCreateJobModalOpen] = useState(false);
 
   const handleViewToggle = (view: React.SetStateAction<string>) => {
     setActiveView(view);
+  };
+
+  const handleOpenCreateJobModal = () => {
+    setIsCreateJobModalOpen(true);
+  };
+
+  const handleCloseCreateJobModal = () => {
+    setIsCreateJobModalOpen(false);
   };
 
   const jobs = [
@@ -104,7 +114,7 @@ const JobHuntPlatform = () => {
           >
             <i className="fas fa-list"></i>
           </button>
-          <button className="add-job-btn">
+          <button className="add-job-btn" onClick={handleOpenCreateJobModal}>
             <i className="fas fa-plus"></i>Add New Job
           </button>
         </div>
@@ -248,6 +258,11 @@ const JobHuntPlatform = () => {
           </table>
         </div>
       )}
+
+      <CreateJobModal
+        isOpen={isCreateJobModalOpen}
+        onClose={handleCloseCreateJobModal}
+      />
     </div>
   );
 };
