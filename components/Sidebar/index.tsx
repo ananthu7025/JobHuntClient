@@ -17,6 +17,7 @@ const Sidebar: React.FC = () => {
     { href: '/dashboard', icon: 'fas fa-home', label: 'Overview' },
     { href: '/jobs', icon: 'fas fa-briefcase', label: 'Jobs' },
     { href: '/candidates', icon: 'fas fa-users', label: 'Candidates' },
+    { href: '/calendar', icon: 'fas fa-calendar-alt', label: 'Calendar' },
     { href: '/resume-scores', icon: 'fas fa-file-alt', label: 'Resume Scores' },
     { href: '/users', icon: 'fas fa-user-friends', label: 'Users' },
     { href: '/settings', icon: 'fas fa-cog', label: 'Settings' },

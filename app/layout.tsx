@@ -2,6 +2,7 @@ import "./globals.scss";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-phone-input-2/lib/style.css";
 import "react-toastify/dist/ReactToastify.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";

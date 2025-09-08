@@ -18,7 +18,15 @@
       "Bash(npx tsc:*)",
       "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\components\\JobDetails\\AssessmentsTab/**)",
       "Read(/C:\\Users\\User\\Desktop\\JobHuntClient/**)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\app/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\app\\(layout)/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\components\\Sidebar/**)",
+      "Bash(npm install:*)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\app/**)",
+      "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\app\\(layout)\\jobs/**)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []
