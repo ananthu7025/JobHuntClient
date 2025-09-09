@@ -2,10 +2,13 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import CreateJobModal from "./CreateJobModal";
+import DeleteConfirmationModal from "../Common/DeleteConfirmationModal";
 
 const JobHuntPlatform = () => {
   const [activeView, setActiveView] = useState("grid");
   const [isCreateJobModalOpen, setIsCreateJobModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [jobToDelete, setJobToDelete] = useState<any>(null);
 
   const handleViewToggle = (view: React.SetStateAction<string>) => {
     setActiveView(view);
@@ -17,6 +20,23 @@ const JobHuntPlatform = () => {
 
   const handleCloseCreateJobModal = () => {
     setIsCreateJobModalOpen(false);
+  };
+
+  const handleDeleteJob = (job: any) => {
+    setJobToDelete(job);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setJobToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (jobToDelete) {
+      console.log("Deleting job:", jobToDelete.title);
+      // Add your delete logic here
+    }
   };
 
   const jobs = [
@@ -192,7 +212,10 @@ const JobHuntPlatform = () => {
                   <button className="btn-edit">
                     <i className="fas fa-edit"></i>Edit
                   </button>
-                  <button className="btn-delete">
+                  <button 
+                    className="btn-delete"
+                    onClick={() => handleDeleteJob(job)}
+                  >
                     <i className="fas fa-trash"></i>
                   </button>
                 </div>
@@ -247,7 +270,10 @@ const JobHuntPlatform = () => {
                       <button className="action-btn edit-btn">
                         <i className="fas fa-edit"></i>
                       </button>
-                      <button className="action-btn delete-btn">
+                      <button 
+                        className="action-btn delete-btn"
+                        onClick={() => handleDeleteJob(job)}
+                      >
                         <i className="fas fa-trash"></i>
                       </button>
                     </div>
@@ -262,6 +288,16 @@ const JobHuntPlatform = () => {
       <CreateJobModal
         isOpen={isCreateJobModalOpen}
         onClose={handleCloseCreateJobModal}
+      />
+
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        title="Delete Job"
+        message="Are you sure you want to delete this job posting?"
+        itemName={jobToDelete?.title}
+        confirmButtonText="Delete Job"
       />
     </div>
   );

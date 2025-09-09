@@ -1,11 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import CreateAssessmentModal from "./CreateAssessmentModal";
+import DeleteConfirmationModal from "../../Common/DeleteConfirmationModal";
 
 const AssessmentsTab = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("All Types");
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [candidateToDelete, setCandidateToDelete] = useState<any>(null);
 
   const assessments = [
     {
@@ -77,6 +81,23 @@ const AssessmentsTab = () => {
         return 'assessment-communication';
       default:
         return 'assessment-default';
+    }
+  };
+
+  const handleDeleteCandidate = (assessment: any) => {
+    setCandidateToDelete(assessment);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setCandidateToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (candidateToDelete) {
+      console.log("Deleting candidate assessment:", candidateToDelete.candidateName);
+      // Add your delete logic here
     }
   };
 
@@ -190,7 +211,11 @@ const AssessmentsTab = () => {
                     <button className="action-btn edit-btn" title="Edit">
                       <i className="fas fa-edit"></i>
                     </button>
-                    <button className="action-btn delete-btn" title="Delete">
+                    <button 
+                      className="action-btn delete-btn" 
+                      title="Delete"
+                      onClick={() => handleDeleteCandidate(assessment)}
+                    >
                       <i className="fas fa-trash"></i>
                     </button>
                   </div>
@@ -204,6 +229,16 @@ const AssessmentsTab = () => {
       <CreateAssessmentModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
+      />
+
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        title="Delete Candidate Assessment"
+        message="Are you sure you want to delete this candidate's assessment? This will permanently remove all assessment data and results."
+        itemName={candidateToDelete?.candidateName}
+        confirmButtonText="Delete Assessment"
       />
     </div>
   );

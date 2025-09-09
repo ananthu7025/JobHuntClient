@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import dynamic from 'next/dynamic';
+import DeleteConfirmationModal from "../../Common/DeleteConfirmationModal";
 
 // Dynamically import the PDF viewer to avoid SSR issues
 const PDFViewerModal = dynamic(() => import('./PDFViewerModal'), { 
@@ -28,6 +30,8 @@ const CandidatesTab = () => {
   const [scoreFilter, setScoreFilter] = useState("All Scores");
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [isPDFModalOpen, setIsPDFModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [candidateToDelete, setCandidateToDelete] = useState<Candidate | null>(null);
 
   // Sample candidate data with base64 PDF (you would get this from your API)
   const candidates: Candidate[] = [
@@ -132,10 +136,20 @@ const CandidatesTab = () => {
     setIsPDFModalOpen(true);
   };
 
-  const handleDeleteCandidate = (candidateId: number) => {
-    if (window.confirm('Are you sure you want to delete this candidate?')) {
-      // Handle delete logic here
-      console.log('Deleting candidate:', candidateId);
+  const handleDeleteCandidate = (candidate: Candidate) => {
+    setCandidateToDelete(candidate);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setCandidateToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (candidateToDelete) {
+      console.log('Deleting candidate:', candidateToDelete.name);
+      // Add your delete logic here
     }
   };
 
@@ -286,7 +300,7 @@ const CandidatesTab = () => {
                     <button 
                       className="action-btn delete-btn" 
                       title="Delete Candidate"
-                      onClick={() => handleDeleteCandidate(candidate.id)}
+                      onClick={() => handleDeleteCandidate(candidate)}
                     >
                       <i className="fas fa-trash"></i>
                     </button>
@@ -308,6 +322,17 @@ const CandidatesTab = () => {
         pdfBase64={selectedCandidate?.resumeBase64 || ""}
         candidateName={selectedCandidate?.name || ""}
         fileName="Resume"
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        title="Delete Candidate"
+        message="Are you sure you want to delete this candidate? This will permanently remove their application, resume, and all associated data."
+        itemName={candidateToDelete?.name}
+        confirmButtonText="Delete Candidate"
       />
     </div>
   );

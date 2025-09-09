@@ -18,7 +18,8 @@
       "Bash(npx tsc:*)",
       "Read(/C:\\Users\\User\\Desktop\\JobHuntClient\\components\\JobDetails\\AssessmentsTab/**)",
       "Read(/C:\\Users\\User\\Desktop\\JobHuntClient/**)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []

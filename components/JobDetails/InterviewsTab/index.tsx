@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
+import DeleteConfirmationModal from "../../Common/DeleteConfirmationModal";
 
 const InterviewsTab = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [roundFilter, setRoundFilter] = useState("All Rounds");
   const [statusFilter, setStatusFilter] = useState("All Status");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [interviewToDelete, setInterviewToDelete] = useState<any>(null);
 
   const interviews = [
     {
@@ -74,6 +78,23 @@ const InterviewsTab = () => {
         return 'round-final';
       default:
         return 'round-default';
+    }
+  };
+
+  const handleDeleteInterview = (interview: any) => {
+    setInterviewToDelete(interview);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setInterviewToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (interviewToDelete) {
+      console.log('Deleting interview for candidate:', interviewToDelete.candidateName);
+      // Add your delete logic here
     }
   };
 
@@ -190,7 +211,11 @@ const InterviewsTab = () => {
                     <button className="action-btn edit-btn" title="Edit">
                       <i className="fas fa-edit"></i>
                     </button>
-                    <button className="action-btn delete-btn" title="Delete">
+                    <button 
+                      className="action-btn delete-btn" 
+                      title="Delete"
+                      onClick={() => handleDeleteInterview(interview)}
+                    >
                       <i className="fas fa-trash"></i>
                     </button>
                   </div>
@@ -200,6 +225,17 @@ const InterviewsTab = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        title="Delete Interview"
+        message="Are you sure you want to delete this interview? This will permanently remove the interview schedule and all associated information."
+        itemName={interviewToDelete ? `${interviewToDelete.candidateName} - ${interviewToDelete.round} Round` : ""}
+        confirmButtonText="Delete Interview"
+      />
     </div>
   );
 };
