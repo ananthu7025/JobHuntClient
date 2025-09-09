@@ -4,7 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 const PUBLIC_ROUTES = [
   "/register",
   "/jobs",
-  "/calendar"
+  "/calendar",
+  "/interview-panels"
 ];
 
 // Check if current route is public

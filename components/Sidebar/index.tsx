@@ -17,7 +17,12 @@ const Sidebar: React.FC = () => {
     { href: '/dashboard', icon: 'fas fa-home', label: 'Overview' },
     { href: '/jobs', icon: 'fas fa-briefcase', label: 'Jobs' },
     { href: '/candidates', icon: 'fas fa-users', label: 'Candidates' },
-    { href: '/calendar', icon: 'fas fa-calendar-alt', label: 'Calendar' },
+    { href: '/assessment-results', icon: 'fas fa-clipboard-check', label: 'Assessment Results' },
+    { href: '/messages', icon: 'fas fa-envelope', label: 'Messages' },
+    { href: '/email-templates', icon: 'fas fa-mail-bulk', label: 'Email Templates' },
+    { href: '/notifications', icon: 'fas fa-bell', label: 'Notifications' },
+    { href: '/interview-panels', icon: 'fas fa-user-friends', label: 'Interview Panels' },
+    { href: '/users', icon: 'fas fa-users-cog', label: 'Users' },
     { href: '/settings', icon: 'fas fa-cog', label: 'Settings' },
   ];
 
