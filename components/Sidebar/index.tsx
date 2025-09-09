@@ -16,6 +16,8 @@ const Sidebar: React.FC = () => {
   const navItems: NavItem[] = [
     { href: '/dashboard', icon: 'fas fa-home', label: 'Overview' },
     { href: '/jobs', icon: 'fas fa-briefcase', label: 'Jobs' },
+    { href: '/candidates', icon: 'fas fa-users', label: 'Candidates' },
+    { href: '/calendar', icon: 'fas fa-calendar-alt', label: 'Calendar' },
     { href: '/settings', icon: 'fas fa-cog', label: 'Settings' },
   ];
 
