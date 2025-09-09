@@ -5,6 +5,7 @@ import { Calendar as BigCalendar, momentLocalizer, Views, Event, View } from 're
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './calendar.scss';
+import NewEventModal from './NewEventModal';
 
 const localizer = momentLocalizer(moment);
 
@@ -24,6 +25,8 @@ interface CalendarEvent extends Event {
 const Calendar: React.FC = () => {
   const [view, setView] = useState<View>(Views.MONTH);
   const [date, setDate] = useState(new Date());
+  const [isNewEventModalOpen, setIsNewEventModalOpen] = useState(false);
+  const [selectedSlotDate, setSelectedSlotDate] = useState<Date | undefined>();
 
   // Sample calendar events
   const events: CalendarEvent[] = useMemo(() => [
@@ -109,38 +112,38 @@ const Calendar: React.FC = () => {
   ], []);
 
   const eventStyleGetter = (event: CalendarEvent) => {
-    let backgroundColor = '#3174ad';
-    let borderColor = '#3174ad';
+    let backgroundColor = '#1d4ed8';
+    let borderColor = '#1d4ed8';
     
     switch (event.type) {
       case 'interview':
-        backgroundColor = '#28a745';
-        borderColor = '#28a745';
+        backgroundColor = '#166534';
+        borderColor = '#166534';
         break;
       case 'meeting':
-        backgroundColor = '#007bff';
-        borderColor = '#007bff';
+        backgroundColor = '#1d4ed8';
+        borderColor = '#1d4ed8';
         break;
       case 'deadline':
-        backgroundColor = '#dc3545';
-        borderColor = '#dc3545';
+        backgroundColor = '#dc2626';
+        borderColor = '#dc2626';
         break;
       case 'follow-up':
-        backgroundColor = '#ffc107';
-        borderColor = '#ffc107';
+        backgroundColor = '#92400e';
+        borderColor = '#92400e';
         break;
       case 'assessment':
-        backgroundColor = '#6610f2';
-        borderColor = '#6610f2';
+        backgroundColor = '#7c3aed';
+        borderColor = '#7c3aed';
         break;
     }
 
     if (event.status === 'completed') {
-      backgroundColor = '#6c757d';
-      borderColor = '#6c757d';
+      backgroundColor = '#6b7280';
+      borderColor = '#6b7280';
     } else if (event.status === 'cancelled') {
-      backgroundColor = '#dc3545';
-      borderColor = '#dc3545';
+      backgroundColor = '#dc2626';
+      borderColor = '#dc2626';
     }
 
     return {
@@ -149,7 +152,7 @@ const Calendar: React.FC = () => {
         borderColor,
         color: 'white',
         border: `1px solid ${borderColor}`,
-        borderRadius: '4px',
+        borderRadius: '6px',
         fontSize: '12px'
       }
     };
@@ -171,68 +174,150 @@ const Calendar: React.FC = () => {
   };
 
   const handleSelectSlot = ({ start, end }: { start: Date; end: Date }) => {
-    const title = window.prompt('Enter event title:');
-    if (title) {
-      console.log('New event:', { title, start, end });
+    setSelectedSlotDate(start);
+    setIsNewEventModalOpen(true);
+  };
+
+  const handleNewEventClick = () => {
+    setSelectedSlotDate(undefined);
+    setIsNewEventModalOpen(true);
+  };
+
+  const handleCreateEvent = (eventData: any) => {
+    // Create new event from form data
+    const newEvent = {
+      id: Date.now().toString(),
+      title: eventData.title,
+      start: new Date(`${eventData.startDate}T${eventData.startTime}`),
+      end: new Date(`${eventData.endDate}T${eventData.endTime}`),
+      type: eventData.type,
+      description: eventData.description,
+      candidate: eventData.candidate,
+      job: eventData.job,
+      location: eventData.location,
+      status: eventData.status
+    };
+    
+    console.log('Creating new event:', newEvent);
+    // Here you would typically add the event to your state/database
+  };
+
+  const handleNavigate = (action: 'PREV' | 'NEXT' | 'TODAY') => {
+    const newDate = new Date(date);
+    if (action === 'PREV') {
+      if (view === Views.MONTH) {
+        newDate.setMonth(date.getMonth() - 1);
+      } else if (view === Views.WEEK) {
+        newDate.setDate(date.getDate() - 7);
+      } else if (view === Views.DAY) {
+        newDate.setDate(date.getDate() - 1);
+      }
+    } else if (action === 'NEXT') {
+      if (view === Views.MONTH) {
+        newDate.setMonth(date.getMonth() + 1);
+      } else if (view === Views.WEEK) {
+        newDate.setDate(date.getDate() + 7);
+      } else if (view === Views.DAY) {
+        newDate.setDate(date.getDate() + 1);
+      }
+    } else if (action === 'TODAY') {
+      setDate(new Date());
+      return;
+    }
+    setDate(newDate);
+  };
+
+  const formatDateLabel = () => {
+    if (view === Views.MONTH) {
+      return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    } else if (view === Views.WEEK) {
+      const startOfWeek = new Date(date);
+      startOfWeek.setDate(date.getDate() - date.getDay());
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      return `${startOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+    } else if (view === Views.DAY) {
+      return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    } else {
+      return 'Agenda';
     }
   };
 
   return (
     <div className="calendar-container">
-      <div className="calendar-header">
-        <div className="calendar-controls">
+      <div className="header">
+        <div>
+          <h1>Calendar</h1>
+          <p>Manage interviews, meetings, and important deadlines</p>
+        </div>
+        <div className="header-buttons">
           <div className="view-selector">
             <button 
-              className={`btn ${view === Views.MONTH ? 'btn-primary' : 'btn-outline-primary'}`}
+              className={`view-toggle ${view === Views.MONTH ? 'active' : ''}`}
               onClick={() => setView(Views.MONTH)}
             >
               Month
             </button>
             <button 
-              className={`btn ${view === Views.WEEK ? 'btn-primary' : 'btn-outline-primary'}`}
+              className={`view-toggle ${view === Views.WEEK ? 'active' : ''}`}
               onClick={() => setView(Views.WEEK)}
             >
               Week
             </button>
             <button 
-              className={`btn ${view === Views.DAY ? 'btn-primary' : 'btn-outline-primary'}`}
+              className={`view-toggle ${view === Views.DAY ? 'active' : ''}`}
               onClick={() => setView(Views.DAY)}
             >
               Day
             </button>
             <button 
-              className={`btn ${view === Views.AGENDA ? 'btn-primary' : 'btn-outline-primary'}`}
+              className={`view-toggle ${view === Views.AGENDA ? 'active' : ''}`}
               onClick={() => setView(Views.AGENDA)}
             >
               Agenda
             </button>
           </div>
-          <button className="btn btn-success">
+          <button className="add-job-btn" onClick={handleNewEventClick}>
             <i className="fas fa-plus"></i> New Event
           </button>
         </div>
-        
-        <div className="calendar-legend">
-          <div className="legend-item">
-            <span className="legend-color interview"></span>
-            Interviews
-          </div>
-          <div className="legend-item">
-            <span className="legend-color meeting"></span>
-            Meetings
-          </div>
-          <div className="legend-item">
-            <span className="legend-color deadline"></span>
-            Deadlines
-          </div>
-          <div className="legend-item">
-            <span className="legend-color follow-up"></span>
-            Follow-ups
-          </div>
-          <div className="legend-item">
-            <span className="legend-color assessment"></span>
-            Assessments
-          </div>
+      </div>
+      
+      <div className="calendar-legend">
+        <div className="legend-item">
+          <span className="legend-color interview"></span>
+          Interviews
+        </div>
+        <div className="legend-item">
+          <span className="legend-color meeting"></span>
+          Meetings
+        </div>
+        <div className="legend-item">
+          <span className="legend-color deadline"></span>
+          Deadlines
+        </div>
+        <div className="legend-item">
+          <span className="legend-color follow-up"></span>
+          Follow-ups
+        </div>
+        <div className="legend-item">
+          <span className="legend-color assessment"></span>
+          Assessments
+        </div>
+      </div>
+
+      <div className="calendar-navigation">
+        <div className="nav-controls">
+          <button className="nav-btn" onClick={() => handleNavigate('TODAY')}>Today</button>
+          <button className="nav-btn" onClick={() => handleNavigate('PREV')}>
+            <i className="fas fa-chevron-left"></i>
+          </button>
+          <button className="nav-btn" onClick={() => handleNavigate('NEXT')}>
+            <i className="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div className="calendar-title">
+          <h2>{formatDateLabel()}</h2>
         </div>
       </div>
 
@@ -250,6 +335,7 @@ const Calendar: React.FC = () => {
           eventPropGetter={eventStyleGetter}
           components={{
             event: EventComponent,
+            toolbar: () => null, // Hide the default toolbar
           }}
           onSelectEvent={handleSelectEvent}
           onSelectSlot={handleSelectSlot}
@@ -261,6 +347,13 @@ const Calendar: React.FC = () => {
           defaultView={Views.MONTH}
         />
       </div>
+
+      <NewEventModal
+        isOpen={isNewEventModalOpen}
+        onClose={() => setIsNewEventModalOpen(false)}
+        onSubmit={handleCreateEvent}
+        selectedDate={selectedSlotDate}
+      />
     </div>
   );
 };

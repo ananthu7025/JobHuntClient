@@ -5,7 +5,7 @@ import Calendar from '@/components/Calendar';
 
 const CalendarPage: React.FC = () => {
   return (
-    <div className="main-content">
+    <div className="jobhunt-platform">
       <Calendar />
     </div>
   );

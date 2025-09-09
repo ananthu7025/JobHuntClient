@@ -30,84 +30,61 @@ const LoginComp: React.FC = () => {
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center min-vh-100">
-      <div className="container d-flex align-items-center justify-content-center min-vh-100">
-        <div className="col-12 col-md-6 col-lg-4 p-4">
-          <div className="text-center mb-4">
-            <Image
-              src={LogginSvg}
-              className="img-fluid"
-              style={{ maxHeight: "160px" }}
-              alt="logo"
-              width={160}
-              height={160}
-            />
+    <div className="login-page">
+      <div className="login-container">
+        <div className="login-card">
+          <div className="login-header">
+            <div className="login-logo">
+              <Image
+                src={LogginSvg}
+                className="logo-image"
+                alt="JobHunt Platform"
+                width={80}
+                height={80}
+              />
+            </div>
+            <div className="login-branding">
+              <h1 className="brand-title">JobHunt Platform</h1>
+              <p className="brand-subtitle">HR Dashboard - Find Your Next Great Hire</p>
+            </div>
           </div>
-          <div className="text-center mb-4">
-            <h1 className="display-4 fw-bold mb-2">
-              <span className="text-primary">joly</span>
-              <span className="text-dark">.com</span>
-            </h1>
-            <p className="lead text-muted">Find Your Next Great Hire</p>
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Email
-              </label>
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className="form-group">
+              <label className="form-control-label">Email Address</label>
               <input
                 type="email"
-                className="form-control"
+                className="form-input"
                 id="email"
                 name="email"
+                placeholder="Enter your email"
                 required
               />
             </div>
 
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">
-                Password
-              </label>
+            <div className="form-group">
+              <label className="form-control-label">Password</label>
               <input
                 type="password"
-                className="form-control"
+                className="form-input"
                 id="password"
                 name="password"
+                placeholder="Enter your password"
                 required
               />
             </div>
 
-            <button
-              className="btn btn-primary w-100 py-3 mb-3 d-flex align-items-center justify-content-center"
-              type="submit"
-            >
-              Start Hiring
-              <svg
-                className="ms-2"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <circle cx="12" cy="12" r="6" />
-                <circle cx="12" cy="12" r="2" />
-              </svg>
+            <button className="login-btn" type="submit">
+              <i className="fas fa-sign-in-alt"></i>
+              Sign In to Dashboard
             </button>
 
-            <div className="d-flex justify-content-between align-items-center">
-              <a href="#" className="text-muted text-decoration-none">
-                Forgot Password?
+            <div className="login-links">
+              <a href="#" className="forgot-link">
+                Forgot your password?
               </a>
-              <div>
-                <span className="text-muted">New Here?</span>{" "}
-                <a href="#" className="text-primary text-decoration-underline">
-                  Sign Up
-                </a>
+              <div className="signup-link">
+                <span>New to JobHunt?</span>
+                <a href="#">Create Account</a>
               </div>
             </div>
           </form>

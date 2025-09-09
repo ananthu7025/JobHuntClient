@@ -3409,3 +3409,188 @@ $border-color: #e9ecef;
     }
   }
 }
+
+// Login Page Styles
+.login-page {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  .login-container {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .login-card {
+    background: $white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid $border-color;
+    overflow: hidden;
+  }
+
+  .login-header {
+    padding: 40px 32px 32px;
+    text-align: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%);
+    border-bottom: 1px solid $border-color;
+
+    .login-logo {
+      margin-bottom: 20px;
+
+      .logo-image {
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+      }
+    }
+
+    .login-branding {
+      .brand-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0 0 8px 0;
+        letter-spacing: -0.5px;
+      }
+
+      .brand-subtitle {
+        font-size: 14px;
+        color: $gray-500;
+        margin: 0;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .login-form {
+    padding: 32px;
+
+    .form-group {
+      margin-bottom: 24px;
+
+      .form-control-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: $gray-600;
+        margin-bottom: 8px;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid $gray-300;
+        border-radius: 8px;
+        font-size: 14px;
+        color: $gray-900;
+        background-color: $white;
+        transition: all 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: $blue-color;
+          box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+        }
+
+        &::placeholder {
+          color: $gray-400;
+        }
+      }
+    }
+
+    .login-btn {
+      width: 100%;
+      background: $primary-color;
+      color: $white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+
+      &:hover {
+        background: $gray-600;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(31, 41, 55, 0.15);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+
+      i {
+        font-size: 14px;
+      }
+    }
+
+    .login-links {
+      text-align: center;
+      
+      .forgot-link {
+        display: block;
+        color: $gray-500;
+        text-decoration: none;
+        font-size: 14px;
+        margin-bottom: 16px;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: $blue-color;
+        }
+      }
+
+      .signup-link {
+        font-size: 14px;
+        color: $gray-500;
+
+        span {
+          margin-right: 4px;
+        }
+
+        a {
+          color: $blue-color;
+          text-decoration: none;
+          font-weight: 500;
+          transition: color 0.2s ease;
+
+          &:hover {
+            color: #1e40af;
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    .login-card {
+      .login-header {
+        padding: 32px 24px 24px;
+
+        .brand-title {
+          font-size: 20px;
+        }
+
+        .brand-subtitle {
+          font-size: 13px;
+        }
+      }
+
+      .login-form {
+        padding: 24px;
+      }
+    }
+  }
+}
