@@ -1,35 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import dynamic from "next/dynamic";
 import { isError } from "@/utils/helper";
-import React, { useEffect, useState } from "react";
-import { EditorConfig } from "@ckeditor/ckeditor5-core";
+import React, { useEffect } from "react";
 import { Controller, FieldValues, Path, UseFormReturn } from "react-hook-form";
+import "react-quill/dist/quill.snow.css";
 
-const CKEditor = dynamic(
-  () => import("@ckeditor/ckeditor5-react").then((mod) => mod.CKEditor),
-  {
-    ssr: false,
-  }
-);
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-// custom toolbar configuration for ck editor
-const editorConfiguration: EditorConfig = {
-  toolbar: {
-    items: [
-      "heading",
-      "|",
-      "bold",
-      "italic",
-      "link",
-      "|",
-      "bulletedList",
-      "numberedList",
-      "|",
-      "undo",
-      "redo",
-    ],
-  },
+// custom toolbar configuration for quill editor
+const quillModules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline"],
+    ["link"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["clean"],
+  ],
 };
+
+const quillFormats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "list",
+  "bullet",
+  "link",
+];
 
 interface HTMLEditorProps<T extends FieldValues> {
   hookForm: UseFormReturn<T>;
@@ -38,8 +35,8 @@ interface HTMLEditorProps<T extends FieldValues> {
   errorText?: string;
   labelMandatory?: boolean;
   disabled?: boolean;
-  config?: EditorConfig;
-  
+  modules?: any;
+  formats?: string[];
 }
 
 const InputHTMLEditor = <T extends FieldValues>({
@@ -48,7 +45,8 @@ const InputHTMLEditor = <T extends FieldValues>({
   field,
   labelMandatory,
   disabled,
-  config,
+  modules,
+  formats,
   errorText,
 }: HTMLEditorProps<T>) => {
   const {
@@ -57,25 +55,18 @@ const InputHTMLEditor = <T extends FieldValues>({
     formState: { errors },
   } = hookForm;
 
-  const [Editor, setEditor] = useState<any>(null);
-
-  useEffect(() => {
-    import("ckeditor5-custom-build/build/ckeditor")
-      .then((module) => setEditor(() => module.default)) // Ensure proper instantiation
-      .catch((error) => console.error("Error loading CKEditor:", error));
-  }, []);
-
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
-      .ck-content {
-        height: 250px;
+      .ql-container {
+        min-height: 250px;
+        font-family: inherit;
       }
-      .ck-content a {
+      .ql-editor {
+        min-height: 250px;
+      }
+      .ql-editor a {
         cursor: pointer;
-      }
-      .ck-powered-by-balloon {
-        display: none !important;
       }
     `;
     document.head.appendChild(style);
@@ -112,67 +103,21 @@ const InputHTMLEditor = <T extends FieldValues>({
         }}
         className={`${isError(errors, field) ? "validate-field" : ""}`}
       >
-        {Editor && (
-          <Controller
-            name={register(field).name}
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <>
-                <CKEditor
-                  editor={Editor as any}
-                  config={config}
-                  data={value || ""}
-                  onChange={(event, editor) => {
-                    const editorData = (editor as any).getData();
-                    onChange(editorData || "");
-                  }}
-                  disabled={disabled}
-                  // remove images from pasting
-                  onReady={(editor) => {
-                    // handle paste event to filter out <img> tags
-                    editor.editing.view.document.on(
-                      "clipboardInput",
-                      (event, datas) => {
-                        const clipboardData = datas?.dataTransfer;
-                        const pastedHtml = clipboardData?.getData("text/html");
-
-                        if (pastedHtml) {
-                          // retrieve pasted HTML
-                          let modifiedHtml = pastedHtml;
-
-                          // remove <img> tags from the HTML
-                          const parser = new DOMParser();
-                          const doc = parser.parseFromString(
-                            pastedHtml,
-                            "text/html"
-                          );
-                          const images = doc.querySelectorAll("img");
-                          images.forEach((img) => img.remove());
-
-                          modifiedHtml = new XMLSerializer().serializeToString(
-                            doc
-                          );
-
-                          // convert modified HTML to CKEditor model
-                          editor.model.change(() => {
-                            const viewFragment =
-                              editor.data.processor.toView(modifiedHtml);
-                            const modelFragment =
-                              editor.data.toModel(viewFragment);
-                            editor.model.insertContent(modelFragment);
-                          });
-
-                          // prevent the default paste action
-                          event.stop();
-                        }
-                      }
-                    );
-                  }}
-                />
-              </>
-            )}
-          />
-        )}
+        <Controller
+          name={register(field).name}
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <ReactQuill
+              value={value || ""}
+              onChange={onChange}
+              modules={modules || quillModules}
+              formats={formats || quillFormats}
+              readOnly={disabled}
+              theme="snow"
+              placeholder="Enter text..."
+            />
+          )}
+        />
       </div>
       {displayError && <p className="error-msg">{displayError}</p>}
 
@@ -182,7 +127,8 @@ const InputHTMLEditor = <T extends FieldValues>({
 
 InputHTMLEditor.defaultProps = {
   disabled: false,
-  config: editorConfiguration,
+  modules: quillModules,
+  formats: quillFormats,
 };
 
 export default InputHTMLEditor;

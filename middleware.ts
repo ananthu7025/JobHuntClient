@@ -5,7 +5,7 @@ const PUBLIC_ROUTES = [
   "/register",
   "/jobs",
   "/calendar",
-  "/interview-panels"
+  "/interview-panels","/templates"
 ];
 
 // Check if current route is public

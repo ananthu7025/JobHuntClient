@@ -4960,3 +4960,619 @@ $border-color: #e9ecef;
     }
   }
 }
+
+// =======================
+// TEMPLATE MANAGEMENT STYLES
+// =======================
+
+// Template Cards - extend from job cards
+.template-card {
+  background: $white;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid $gray-200;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $gray-300;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .template-type-badge {
+    @include flex-center;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    gap: 4px;
+    background: $gray-100;
+    color: $gray-700;
+    margin-bottom: 8px;
+    width: fit-content;
+
+    i {
+      font-size: 12px;
+    }
+  }
+
+  .template-variables-count,
+  .template-field-count {
+    @include flex-center;
+    gap: 4px;
+    font-size: 12px;
+    color: $gray-500;
+    margin-top: 8px;
+
+    i {
+      font-size: 12px;
+    }
+  }
+
+  .template-subject-preview {
+    @include flex-center;
+    gap: 6px;
+    font-size: 12px;
+    color: $gray-600;
+    margin-top: 8px;
+    padding: 6px 8px;
+    background: $gray-50;
+    border-radius: 4px;
+    border-left: 3px solid $blue-color;
+
+    i {
+      color: $blue-color;
+    }
+  }
+
+  .template-description {
+    font-size: 14px;
+    color: $gray-600;
+    line-height: 1.4;
+    margin: 8px 0 12px 0;
+  }
+
+  .template-fields-preview {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid $gray-200;
+
+    .template-type-badge {
+      margin-bottom: 8px;
+    }
+  }
+}
+
+// Template Management Main Content
+.main-content {
+  .template-management {
+    // Uses existing main-content styles
+  }
+}
+
+// Template Modal Styles
+.create-job-modal {
+  // Template-specific modal enhancements
+  .modal-header-actions {
+    @include flex-center;
+    gap: 12px;
+
+    .mode-toggle-btn {
+      @include button-base;
+      padding: 8px 16px;
+      background: $gray-100;
+      color: $gray-600;
+      font-size: 13px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: $gray-200;
+      }
+
+      &.active {
+        background: $blue-color;
+        color: $white;
+      }
+    }
+
+    .close-btn {
+      @include button-base;
+      padding: 8px;
+      background: none;
+      color: $gray-400;
+      font-size: 16px;
+      
+      &:hover {
+        color: $gray-600;
+        background: $gray-100;
+      }
+    }
+  }
+
+  // Template View Mode Styles
+  .template-view-mode {
+    .template-info-section {
+      margin-bottom: 32px;
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .info-item {
+        &.full-width {
+          grid-column: 1 / -1;
+        }
+
+        label {
+          font-size: 12px;
+          font-weight: 600;
+          color: $gray-500;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 4px;
+          display: block;
+        }
+
+        span, p {
+          font-size: 14px;
+          color: $gray-900;
+          margin: 0;
+        }
+      }
+
+      .status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+
+        &.status-active {
+          background: $green-light;
+          color: $green-color;
+        }
+
+        &.status-inactive {
+          background: $gray-200;
+          color: $gray-600;
+        }
+      }
+
+      .template-type-indicator {
+        @include flex-center;
+        gap: 6px;
+        font-size: 14px;
+        color: $gray-700;
+
+        i {
+          color: $blue-color;
+        }
+      }
+    }
+
+    .template-content-section,
+    .template-variables-section,
+    .job-template-section {
+      margin-bottom: 32px;
+
+      h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: $gray-900;
+        margin-bottom: 16px;
+      }
+    }
+
+    .email-content-view {
+      border: 1px solid $gray-200;
+      border-radius: 8px;
+      overflow: hidden;
+
+      .html-content-display,
+      .text-content-display {
+        padding: 20px;
+        background: $white;
+      }
+
+      .text-content-preview {
+        font-family: 'Courier New', monospace;
+        font-size: 13px;
+        line-height: 1.5;
+        margin: 0;
+        white-space: pre-wrap;
+        // color: $gray-800;
+      }
+
+      .html-content-preview {
+        line-height: 1.6;
+        
+        h1, h2, h3, h4, h5, h6 {
+          margin-top: 0;
+          margin-bottom: 8px;
+        }
+
+        p {
+          margin-bottom: 8px;
+        }
+
+        ul, ol {
+          margin-bottom: 8px;
+          padding-left: 20px;
+        }
+      }
+    }
+
+    .no-variables-message,
+    .no-job-fields-message {
+      padding: 20px;
+      text-align: center;
+      color: $gray-500;
+      font-style: italic;
+      background: $gray-50;
+      border-radius: 8px;
+    }
+
+    .job-fields-display {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+
+      .job-field-item {
+        padding: 12px;
+        background: $gray-50;
+        border-radius: 6px;
+        border-left: 3px solid $blue-color;
+
+        .field-label {
+          font-size: 12px;
+          font-weight: 600;
+          color: $gray-600;
+          margin-bottom: 4px;
+        }
+
+        .field-value {
+          font-size: 14px;
+          color: $gray-900;
+        }
+      }
+    }
+  }
+
+  // Template Form Styles
+  .form-section {
+    margin-bottom: 32px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: $gray-900;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid $gray-200;
+    }
+  }
+
+  // Preview Controls
+  .preview-header {
+    @include flex-center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: $gray-900;
+    }
+
+    .preview-controls {
+      @include flex-center;
+      gap: 4px;
+    }
+  }
+
+  .preview-mode-btn {
+    @include button-base;
+    padding: 6px 12px;
+    font-size: 12px;
+    background: $gray-100;
+    color: $gray-600;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: $gray-200;
+    }
+
+    &.active {
+      background: $blue-color;
+      color: $white;
+    }
+  }
+
+  // Email Preview
+  .email-preview {
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    overflow: hidden;
+    background: $white;
+
+    .preview-subject {
+      padding: 12px 16px;
+      background: $gray-50;
+      border-bottom: 1px solid $gray-200;
+      font-size: 13px;
+      color: $gray-700;
+
+      strong {
+        color: $gray-900;
+      }
+    }
+
+    .html-preview,
+    .text-preview {
+      padding: 20px;
+    }
+
+    .html-content-preview {
+      line-height: 1.6;
+      // color: $gray-800;
+
+      h1, h2, h3 { margin-top: 0; }
+      p { margin-bottom: 8px; }
+      ul, ol { padding-left: 20px; }
+    }
+
+    .text-content-preview {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0;
+      white-space: pre-wrap;
+      // color: $gray-800;
+    }
+
+    .empty-preview {
+      color: $gray-500;
+      font-style: italic;
+      text-align: center;
+      padding: 40px 20px;
+      background: $gray-50;
+    }
+  }
+
+  // Variables Section
+  .variables-info {
+    .variables-list {
+      margin-bottom: 20px;
+    }
+
+    .no-variables {
+      padding: 20px;
+      text-align: center;
+      color: $gray-500;
+      font-style: italic;
+      background: $gray-50;
+      border-radius: 6px;
+    }
+
+    .variables-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .variable-tag {
+      @include flex-center;
+      gap: 4px;
+      padding: 4px 8px;
+      background: $blue-light;
+      color: $blue-color;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+
+      i {
+        font-size: 10px;
+      }
+    }
+
+    .variables-help {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid $gray-200;
+
+      h4 {
+        font-size: 14px;
+        font-weight: 600;
+        color: $gray-700;
+        margin-bottom: 8px;
+      }
+
+      .common-variables {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .variable-example {
+        padding: 3px 6px;
+        background: $gray-100;
+        color: $gray-700;
+        border-radius: 4px;
+        font-size: 11px;
+        font-family: 'Courier New', monospace;
+        border: 1px solid $gray-200;
+      }
+    }
+  }
+
+  // Job Template Placeholder
+  .job-template-info {
+    .job-fields-placeholder {
+      padding: 40px 20px;
+      text-align: center;
+      background: $gray-50;
+      border: 2px dashed $gray-300;
+      border-radius: 8px;
+
+      .placeholder-content {
+        i {
+          font-size: 48px;
+          color: $gray-400;
+          margin-bottom: 16px;
+          display: block;
+        }
+
+        h4 {
+          font-size: 16px;
+          font-weight: 600;
+          color: $gray-700;
+          margin-bottom: 8px;
+        }
+
+        p {
+          color: $gray-500;
+          margin-bottom: 8px;
+
+          &:last-child {
+            font-style: italic;
+            font-size: 13px;
+          }
+        }
+      }
+    }
+  }
+
+  // Responsive Design
+  @media (max-width: 768px) {
+    .modal-body {
+      padding: 20px;
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .preview-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .variables-grid {
+        justify-content: center;
+      }
+
+      .common-variables {
+        justify-content: center;
+      }
+    }
+
+    .modal-header,
+    .modal-footer {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .modal-header-actions {
+      .mode-toggle-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+
+    .template-info-section .info-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .modal-body {
+      .email-preview .preview-subject {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .variables-grid {
+        gap: 4px;
+      }
+
+      .variable-tag {
+        font-size: 11px;
+        padding: 2px 6px;
+      }
+
+      .common-variables .variable-example {
+        font-size: 10px;
+        padding: 2px 4px;
+      }
+    }
+  }
+}
+
+// List View Template Styles
+.jobs-table {
+  .template-title-cell {
+    .template-title-main {
+      font-weight: 600;
+      color: $gray-900;
+      margin-bottom: 4px;
+    }
+
+    .template-type-indicator {
+      @include flex-center;
+      gap: 4px;
+      font-size: 12px;
+      color: $gray-500;
+      margin-bottom: 2px;
+
+      i {
+        color: $blue-color;
+      }
+    }
+
+    .template-variables-count,
+    .template-field-count {
+      font-size: 11px;
+      color: $gray-400;
+    }
+  }
+
+  .template-description-cell {
+    font-size: 13px;
+    color: $gray-600;
+    line-height: 1.4;
+    max-width: 200px;
+  }
+}
+
+// Template Category Styles
+.template-category {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  background: $gray-100;
+  color: $gray-700;
+}
+
+// Filter and Search Enhancement for Templates
+.filters {
+  .results-row {
+    .results-count {
+      // Uses existing styles but can be enhanced for templates
+      font-size: 14px;
+      color: $gray-600;
+
+      &::after {
+        content: " found";
+      }
+    }
+  }
+}

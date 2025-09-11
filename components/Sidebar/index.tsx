@@ -19,7 +19,7 @@ const Sidebar: React.FC = () => {
     { href: '/candidates', icon: 'fas fa-users', label: 'Candidates' },
     { href: '/assessment-results', icon: 'fas fa-clipboard-check', label: 'Assessment Results' },
     { href: '/messages', icon: 'fas fa-envelope', label: 'Messages' },
-    { href: '/email-templates', icon: 'fas fa-mail-bulk', label: 'Email Templates' },
+    { href: '/templates', icon: 'fas fa-envelope-open-text', label: 'Email Templates' },
     { href: '/notifications', icon: 'fas fa-bell', label: 'Notifications' },
     { href: '/interview-panels', icon: 'fas fa-user-friends', label: 'Interview Panels' },
     { href: '/users', icon: 'fas fa-users-cog', label: 'Users' },
