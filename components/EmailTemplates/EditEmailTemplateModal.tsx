@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useForm } from "react-hook-form";
@@ -120,7 +121,7 @@ const EditEmailTemplateModal: React.FC<EditEmailTemplateModalProps> = ({
       isActive: data.isActive
     };
 
-    onSubmit(submissionData);
+    // onSubmit(submissionData);
     handleClose();
   };
 

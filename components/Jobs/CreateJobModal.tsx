@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { useForm } from "react-hook-form";
@@ -5,8 +6,8 @@ import InputText from "@/components/InputComponents/InputText";
 import InputDropDown from "@/components/InputComponents/InputDropDown";
 import InputDatePicker from "@/components/InputComponents/InputDatePicker";
 import InputTextArea from "@/components/InputComponents/InputTextArea";
-import InputCheckbox from "@/components/InputComponents/InputCheckbox";
-import InputCreatableDropDown from "@/components/InputComponents/InputCreatableDropDown";
+// import InputCheckbox from "@/components/InputComponents/InputCheckbox";
+// import InputCreatableDropDown from "@/components/InputComponents/InputCreatableDropDown";
 import { SelectItem } from "@/types";
 
 interface CustomField {

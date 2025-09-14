@@ -1,0 +1,352 @@
+// JobHunt Multi-Tenant Database Schema
+// Copy and paste this entire content into dbdiagram.io
+
+Table companies {
+  _id varchar [pk]
+  name varchar [not null, note: 'Company name']
+  domain varchar [note: 'Company domain for email validation']
+  industry varchar [note: 'e.g. Technology, Healthcare, Finance']
+  size varchar [not null, note: 'startup | small | medium | large | enterprise']
+
+  address_street varchar
+  address_city varchar
+  address_state varchar
+  address_country varchar
+  address_postal_code varchar
+  phone varchar
+  website varchar
+
+  settings_timezone varchar [default: 'UTC']
+  settings_currency varchar [default: 'USD']
+  settings_date_format varchar [default: 'MM/DD/YYYY']
+  settings_language varchar [default: 'en']
+
+  subscription_plan varchar [default: 'free', note: 'free | basic | professional | enterprise']
+  subscription_status varchar [default: 'active', note: 'active | inactive | suspended | cancelled']
+  subscription_start_date timestamp [default: `now()`]
+  subscription_end_date timestamp
+  subscription_max_users int [default: 5]
+  subscription_max_jobs int [default: 10]
+  subscription_features text [note: 'Array of enabled features']
+
+  primary_contact_name varchar [not null]
+  primary_contact_email varchar [not null]
+  primary_contact_phone varchar
+
+  is_active boolean [default: true]
+  is_verified boolean [default: false]
+
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table users {
+  _id varchar [pk]
+  email varchar [not null, note: 'Unique within company']
+  password varchar [not null, note: 'Hashed with bcrypt']
+  first_name varchar [not null]
+  last_name varchar [not null]
+  phone varchar
+  avatar varchar [note: 'Profile picture URL']
+
+  company_id varchar [not null, ref: > companies._id, note: 'REQUIRED for data isolation']
+
+  role varchar [not null, note: 'company_admin | hr_manager | recruiter | interviewer | hiring_manager']
+
+  permissions_jobs text [note: 'CRUD permissions for jobs']
+  permissions_candidates text [note: 'CRUD permissions for candidates']
+  permissions_interviews text [note: 'CRUD permissions for interviews']
+  permissions_assessments text [note: 'CRUD permissions for assessments']
+  permissions_users text [note: 'CRUD permissions for users']
+  permissions_reports text [note: 'Read permissions for reports']
+  permissions_settings text [note: 'Read/Update permissions for settings']
+
+  department varchar
+  job_title varchar
+  employee_id varchar
+
+  is_active boolean [default: true]
+  is_email_verified boolean [default: false]
+  preferences_timezone varchar
+  preferences_language varchar
+  preferences_email_notifications boolean [default: true]
+  preferences_push_notifications boolean [default: true]
+
+  last_login timestamp
+  refresh_token varchar
+  password_reset_token varchar
+  password_reset_expires timestamp
+
+  invited_by varchar [ref: > users._id]
+  invited_at timestamp
+  invite_token varchar
+  invite_accepted_at timestamp
+
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table jobs {
+  _id varchar [pk]
+
+  company_id varchar [not null, ref: > companies._id, note: 'REQUIRED for data isolation']
+
+  job_id varchar [not null, note: 'Unique within company']
+  title varchar [not null]
+  company varchar [not null, note: 'Can be different from account owner for agencies']
+  location varchar [not null]
+
+  salary_min decimal [not null]
+  salary_max decimal [not null]
+  salary_currency varchar [default: 'USD']
+  salary_pay_rate varchar [not null, note: 'hourly | daily | annual']
+
+  type varchar [not null, note: 'fulltime | parttime | contract | internship']
+  status varchar [default: 'draft', note: 'active | draft | closed | onhold']
+  department varchar [not null]
+
+  hiring_manager varchar [not null, ref: > users._id, note: 'Must be from same company']
+  date_opened timestamp [not null]
+  target_closing_date timestamp
+  client_name varchar
+  account_manager varchar [ref: > users._id, note: 'Must be from same company']
+  work_mode varchar [not null, note: 'remote | hybrid | onsite']
+  work_experience varchar [note: 'e.g. 2-5 years']
+  skills_required text [note: 'Array of required skills']
+
+  job_description text [note: 'HTML content']
+  requirements text [note: 'HTML content']
+
+  custom_fields text [note: 'Dynamic custom fields']
+
+  template_used varchar [ref: > job_templates._id, note: 'Must be from same company']
+  workflow varchar [ref: > workflows._id, note: 'Must be from same company']
+
+  application_count int [default: 0]
+  view_count int [default: 0]
+
+  created_by varchar [not null, ref: > users._id, note: 'From same company']
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table candidates {
+  _id varchar [pk]
+
+  company_id varchar [not null, ref: > companies._id, note: 'REQUIRED for data isolation']
+
+  first_name varchar [not null]
+  last_name varchar [not null]
+  email varchar [not null]
+  phone varchar [not null]
+  location varchar
+  nationality varchar
+
+  experience varchar [note: 'e.g. 5+ years']
+  current_position varchar
+  current_company varchar
+  expected_salary_min decimal
+  expected_salary_max decimal
+  expected_salary_currency varchar
+
+  resume text [note: 'GridFS file info with base64 for display']
+  additional_documents text [note: 'Array of document info']
+
+  job_applications text [note: 'Array of job applications with status']
+
+  assessments text [note: 'Array of assessment results']
+
+  communications text [note: 'Array of communication logs']
+
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table assessments {
+  _id varchar [pk]
+
+  company_id varchar [not null, ref: > companies._id]
+
+  title varchar [not null]
+  description text
+  type varchar [not null, note: 'technical | cognitive | communication | personality | custom']
+  category varchar [not null, note: 'e.g. JavaScript, React, Problem Solving']
+
+  questions text [note: 'Array of questions with options and answers']
+
+  total_points int [not null]
+  time_limit int [not null, note: 'Total time in minutes']
+  passing_score int [not null, note: 'Percentage']
+
+  is_active boolean [default: true]
+  allow_retake boolean [default: false]
+  show_results boolean [default: true]
+
+  jobs text [note: 'Array of job IDs using this assessment']
+
+  created_by varchar [not null, ref: > users._id]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table interviews {
+  _id varchar [pk]
+
+  company_id varchar [not null, ref: > companies._id]
+
+  job_id varchar [not null, ref: > jobs._id]
+  candidate_id varchar [not null, ref: > candidates._id]
+
+  title varchar [not null]
+  type varchar [not null, note: 'phone | video | in_person | technical | behavioral']
+  scheduled_date timestamp [not null]
+  duration int [not null, note: 'In minutes']
+  location varchar [note: 'Physical location or meeting link']
+
+  interviewers text [note: 'Array of interviewer info with roles']
+
+  round int [not null, note: '1, 2, 3, etc.']
+  stage varchar [note: 'Corresponding to workflow stage']
+
+  status varchar [default: 'scheduled', note: 'scheduled | confirmed | in_progress | completed | cancelled | rescheduled']
+  feedback text [note: 'Array of feedback from interviewers']
+
+  overall_rating decimal
+  decision varchar [note: 'pass | fail']
+  next_steps text
+
+  calendar_event_id varchar
+
+  scheduled_by varchar [not null, ref: > users._id]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table workflows {
+  _id varchar [pk]
+
+  company_id varchar [not null, ref: > companies._id]
+
+  name varchar [not null]
+  description text
+  is_template boolean [default: false, note: 'True for reusable templates']
+  is_active boolean [default: true]
+
+  stages text [note: 'Array of workflow stages with configurations']
+
+  jobs text [note: 'Array of job IDs using this workflow']
+  usage_count int [default: 0]
+
+  created_by varchar [not null, ref: > users._id]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table email_templates {
+  _id varchar [pk]
+
+  company_id varchar [not null, ref: > companies._id]
+
+  name varchar [not null]
+  category varchar [not null, note: 'application_received | interview_invitation | rejection | offer | follow_up | assessment_invitation | custom']
+
+  subject varchar [not null, note: 'Supports variables like {{candidateName}}']
+  html_content text [not null, note: 'Rich HTML content']
+  text_content text [note: 'Plain text fallback']
+
+  variables text [note: 'Array of variable definitions']
+
+  is_active boolean [default: true]
+  is_default boolean [default: false, note: 'Default template for the category']
+
+  usage_count int [default: 0]
+  last_used timestamp
+
+  created_by varchar [not null, ref: > users._id]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table calendar_events {
+  _id varchar [pk]
+
+  company_id varchar [not null, ref: > companies._id]
+
+  title varchar [not null]
+  description text
+
+  start_date timestamp [not null]
+  end_date timestamp [not null]
+  is_all_day boolean [default: false]
+  timezone varchar [not null]
+
+  type varchar [not null, note: 'interview | meeting | deadline | follow_up | assessment | other']
+  location varchar [note: 'Physical location or meeting link']
+
+  job_id varchar [ref: > jobs._id, note: 'If related to a job']
+  candidate_id varchar [ref: > candidates._id, note: 'If related to a candidate']
+  interview_id varchar [ref: > interviews._id, note: 'If it is an interview']
+
+  organizer varchar [not null, ref: > users._id]
+  attendees text [note: 'Array of attendee info (internal users + external)']
+
+  recurrence text [note: 'Recurrence configuration']
+
+  status varchar [default: 'scheduled', note: 'scheduled | confirmed | cancelled | completed']
+
+  reminders text [note: 'Array of reminder configurations']
+
+  external_calendar_id varchar
+  external_event_id varchar
+
+  created_by varchar [not null, ref: > users._id]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table job_templates {
+  _id varchar [pk]
+
+  company_id varchar [not null, ref: > companies._id]
+
+  name varchar [not null]
+  category varchar [not null, note: 'e.g. Software Development, Marketing']
+  description text
+
+  template_data text [note: 'Pre-filled job data']
+
+  default_workflow varchar [ref: > workflows._id]
+
+  is_active boolean [default: true]
+  usage_count int [default: 0]
+
+  created_by varchar [not null, ref: > users._id]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table notifications {
+  _id varchar [pk]
+
+  company_id varchar [not null, ref: > companies._id]
+
+  user_id varchar [not null, ref: > users._id, note: 'Recipient']
+
+  title varchar [not null]
+  message text [not null]
+  type varchar [not null, note: 'info | warning | error | success']
+  category varchar [not null, note: 'application | interview | assessment | system | reminder']
+
+  related_job varchar [ref: > jobs._id]
+  related_candidate varchar [ref: > candidates._id]
+  related_interview varchar [ref: > interviews._id]
+
+  is_read boolean [default: false]
+  read_at timestamp
+
+  action_url varchar [note: 'URL to navigate when clicked']
+  action_text varchar [note: 'Text for action button']
+
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}

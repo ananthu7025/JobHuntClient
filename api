@@ -1,0 +1,1164 @@
+
+#### GET `/api/jobs`
+```typescript
+// Query Parameters
+{
+  page?: number; // default: 1
+  limit?: number; // default: 10
+  status?: 'active' | 'draft' | 'closed' | 'onhold';
+  type?: 'fulltime' | 'parttime' | 'contract' | 'internship';
+  department?: string;
+  search?: string; // search in title, company, location
+  sortBy?: 'createdAt' | 'updatedAt' | 'title' | 'applicationCount';
+  sortOrder?: 'asc' | 'desc';
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    jobs: IJob[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+      itemsPerPage: number;
+    };
+  };
+}
+```
+
+#### GET `/api/jobs/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  data: IJob & {
+    candidates?: ICandidate[];
+    interviews?: IInterview[];
+    workflow?: IWorkflow;
+  };
+}
+```
+
+#### POST `/api/jobs`
+```typescript
+// Request Body: Partial<IJob>
+// Response
+{
+  success: boolean;
+  message: string;
+  data: IJob;
+}
+```
+
+#### PUT `/api/jobs/:id`
+```typescript
+// Request Body: Partial<IJob>
+// Response
+{
+  success: boolean;
+  message: string;
+  data: IJob;
+}
+```
+
+#### DELETE `/api/jobs/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  message: string;
+}
+```
+
+#### POST `/api/jobs/:id/duplicate`
+```typescript
+// Request Body
+{
+  title: string; // new job title
+  modifications?: Partial<IJob>; // any other changes
+}
+
+// Response
+{
+  success: boolean;
+  data: IJob;
+}
+```
+
+### Candidate Management Endpoints
+
+#### GET `/api/candidates`
+```typescript
+// Query Parameters
+{
+  jobId?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+  search?: string; // name, email, phone
+  minResumeScore?: number;
+  maxResumeScore?: number;
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    candidates: ICandidate[];
+    pagination: PaginationInfo;
+  };
+}
+```
+
+#### GET `/api/candidates/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  data: ICandidate & {
+    jobApplicationDetails?: any[];
+    interviewHistory?: IInterview[];
+    assessmentResults?: any[];
+  };
+}
+```
+
+#### POST `/api/candidates`
+```typescript
+// Request Body: Omit<ICandidate, '_id' | 'createdAt' | 'updatedAt'>
+// Response
+{
+  success: boolean;
+  data: ICandidate;
+}
+```
+
+#### PUT `/api/candidates/:id`
+```typescript
+// Request Body: Partial<ICandidate>
+// Response
+{
+  success: boolean;
+  data: ICandidate;
+}
+```
+
+#### POST `/api/candidates/:id/resume`
+```typescript
+// Form Data: file (PDF/DOC/DOCX)
+// Response
+{
+  success: boolean;
+  message: string;
+  data: {
+    fileId: string;
+    fileName: string;
+    base64?: string;
+  };
+}
+```
+
+#### GET `/api/candidates/:id/resume`
+```typescript
+// Response: File download or base64 data
+```
+
+#### PUT `/api/candidates/:id/status`
+```typescript
+// Request Body
+{
+  jobId: string;
+  status: string;
+  notes?: string;
+}
+
+// Response
+{
+  success: boolean;
+  message: string;
+}
+```
+
+### Assessment Endpoints
+
+#### GET `/api/assessments`
+```typescript
+// Query Parameters
+{
+  type?: string;
+  isActive?: boolean;
+  page?: number;
+  limit?: number;
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    assessments: IAssessment[];
+    pagination: PaginationInfo;
+  };
+}
+```
+
+#### GET `/api/assessments/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  data: IAssessment;
+}
+```
+
+#### POST `/api/assessments`
+```typescript
+// Request Body: Omit<IAssessment, '_id' | 'createdAt' | 'updatedAt'>
+// Response
+{
+  success: boolean;
+  data: IAssessment;
+}
+```
+
+#### PUT `/api/assessments/:id`
+```typescript
+// Request Body: Partial<IAssessment>
+// Response
+{
+  success: boolean;
+  data: IAssessment;
+}
+```
+
+#### DELETE `/api/assessments/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  message: string;
+}
+```
+
+#### POST `/api/assessments/:id/assign`
+```typescript
+// Request Body
+{
+  candidateIds: string[];
+  dueDate?: Date;
+  emailTemplate?: string;
+}
+
+// Response
+{
+  success: boolean;
+  message: string;
+  data: {
+    assignedCount: number;
+    assignments: any[];
+  };
+}
+```
+
+### Interview Endpoints
+
+#### GET `/api/interviews`
+```typescript
+// Query Parameters
+{
+  jobId?: string;
+  candidateId?: string;
+  interviewerId?: string;
+  status?: string;
+  startDate?: string; // ISO date
+  endDate?: string; // ISO date
+  page?: number;
+  limit?: number;
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    interviews: IInterview[];
+    pagination: PaginationInfo;
+  };
+}
+```
+
+#### GET `/api/interviews/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  data: IInterview & {
+    job?: IJob;
+    candidate?: ICandidate;
+    interviewerDetails?: IUser[];
+  };
+}
+```
+
+#### POST `/api/interviews`
+```typescript
+// Request Body: Omit<IInterview, '_id' | 'createdAt' | 'updatedAt'>
+// Response
+{
+  success: boolean;
+  data: IInterview;
+}
+```
+
+#### PUT `/api/interviews/:id`
+```typescript
+// Request Body: Partial<IInterview>
+// Response
+{
+  success: boolean;
+  data: IInterview;
+}
+```
+
+#### POST `/api/interviews/:id/feedback`
+```typescript
+// Request Body
+{
+  interviewerId: string;
+  rating: number; // 1-10
+  strengths: string;
+  weaknesses: string;
+  recommendation: 'strong_hire' | 'hire' | 'no_hire' | 'strong_no_hire';
+  comments: string;
+}
+
+// Response
+{
+  success: boolean;
+  message: string;
+}
+```
+
+#### POST `/api/interviews/:id/reschedule`
+```typescript
+// Request Body
+{
+  newDate: Date;
+  reason?: string;
+  notifyParticipants: boolean;
+}
+
+// Response
+{
+  success: boolean;
+  message: string;
+  data: IInterview;
+}
+```
+
+### Workflow Endpoints
+
+#### GET `/api/workflows`
+```typescript
+// Query Parameters
+{
+  isTemplate?: boolean;
+  isActive?: boolean;
+  page?: number;
+  limit?: number;
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    workflows: IWorkflow[];
+    pagination: PaginationInfo;
+  };
+}
+```
+
+#### GET `/api/workflows/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  data: IWorkflow;
+}
+```
+
+#### POST `/api/workflows`
+```typescript
+// Request Body: Omit<IWorkflow, '_id' | 'createdAt' | 'updatedAt'>
+// Response
+{
+  success: boolean;
+  data: IWorkflow;
+}
+```
+
+#### PUT `/api/workflows/:id`
+```typescript
+// Request Body: Partial<IWorkflow>
+// Response
+{
+  success: boolean;
+  data: IWorkflow;
+}
+```
+
+#### GET `/api/workflows/library`
+```typescript
+// Response
+{
+  success: boolean;
+  data: IWorkflow[]; // only templates
+}
+```
+
+### Calendar Endpoints
+
+#### GET `/api/calendar/events`
+```typescript
+// Query Parameters
+{
+  startDate: string; // ISO date
+  endDate: string; // ISO date
+  type?: string;
+  userId?: string;
+  jobId?: string;
+}
+
+// Response
+{
+  success: boolean;
+  data: ICalendarEvent[];
+}
+```
+
+#### GET `/api/calendar/events/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  data: ICalendarEvent;
+}
+```
+
+#### POST `/api/calendar/events`
+```typescript
+// Request Body: Omit<ICalendarEvent, '_id' | 'createdAt' | 'updatedAt'>
+// Response
+{
+  success: boolean;
+  data: ICalendarEvent;
+}
+```
+
+#### PUT `/api/calendar/events/:id`
+```typescript
+// Request Body: Partial<ICalendarEvent>
+// Response
+{
+  success: boolean;
+  data: ICalendarEvent;
+}
+```
+
+#### DELETE `/api/calendar/events/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  message: string;
+}
+```
+
+### Email Template Endpoints
+
+#### GET `/api/email-templates`
+```typescript
+// Query Parameters
+{
+  category?: string;
+  isActive?: boolean;
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    templates: IEmailTemplate[];
+    pagination: PaginationInfo;
+  };
+}
+```
+
+#### GET `/api/email-templates/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  data: IEmailTemplate;
+}
+```
+
+#### POST `/api/email-templates`
+```typescript
+// Request Body: Omit<IEmailTemplate, '_id' | 'createdAt' | 'updatedAt'>
+// Response
+{
+  success: boolean;
+  data: IEmailTemplate;
+}
+```
+
+#### PUT `/api/email-templates/:id`
+```typescript
+// Request Body: Partial<IEmailTemplate>
+// Response
+{
+  success: boolean;
+  data: IEmailTemplate;
+}
+```
+
+#### DELETE `/api/email-templates/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  message: string;
+}
+```
+
+#### POST `/api/email-templates/:id/send`
+```typescript
+// Request Body
+{
+  recipients: string[]; // email addresses
+  variables: Record<string, any>; // template variables
+  jobId?: string;
+  candidateId?: string;
+}
+
+// Response
+{
+  success: boolean;
+  message: string;
+  data: {
+    sentCount: number;
+    failedCount: number;
+    messageIds: string[];
+  };
+}
+```
+
+#### POST `/api/email-templates/:id/duplicate`
+```typescript
+// Request Body
+{
+  name: string;
+  modifications?: Partial<IEmailTemplate>;
+}
+
+// Response
+{
+  success: boolean;
+  data: IEmailTemplate;
+}
+```
+
+### File Management Endpoints
+
+#### POST `/api/files/upload`
+```typescript
+// Form Data: file, category?, description?
+// Response
+{
+  success: boolean;
+  data: {
+    fileId: string;
+    fileName: string;
+    filePath: string;
+    fileSize: number;
+    mimeType: string;
+    uploadDate: Date;
+  };
+}
+```
+
+#### GET `/api/files/:id`
+```typescript
+// Response: File download
+```
+
+#### DELETE `/api/files/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  message: string;
+}
+```
+
+### Analytics & Reports Endpoints
+
+#### GET `/api/analytics/dashboard`
+```typescript
+// Query Parameters
+{
+  dateRange?: '7d' | '30d' | '90d' | 'custom';
+  startDate?: string;
+  endDate?: string;
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    totalJobs: number;
+    activeJobs: number;
+    totalCandidates: number;
+    totalInterviews: number;
+    applicationTrends: any[];
+    hiringFunnel: any[];
+    timeToHire: number; // average days
+    costPerHire: number;
+  };
+}
+```
+
+#### GET `/api/analytics/jobs/:id`
+```typescript
+// Response
+{
+  success: boolean;
+  data: {
+    applicationsOverTime: any[];
+    candidateStatusBreakdown: any[];
+    sourceBreakdown: any[];
+    avgResumeScore: number;
+    interviewToOfferRatio: number;
+  };
+}
+```
+
+### Notification Endpoints
+
+#### GET `/api/notifications`
+```typescript
+// Query Parameters
+{
+  isRead?: boolean;
+  category?: string;
+  page?: number;
+  limit?: number;
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    notifications: INotification[];
+    unreadCount: number;
+    pagination: PaginationInfo;
+  };
+}
+```
+
+#### PUT `/api/notifications/:id/read`
+```typescript
+// Response
+{
+  success: boolean;
+  message: string;
+}
+```
+
+#### PUT `/api/notifications/mark-all-read`
+```typescript
+// Response
+{
+  success: boolean;
+  message: string;
+}
+```
+
+### AI & Gemini Integration Endpoints
+
+#### POST `/api/ai/job-descriptions/generate`
+```typescript
+// Request Body
+{
+  jobTitle: string;
+  department: string;
+  experienceLevel: 'entry' | 'mid' | 'senior' | 'executive';
+  skillsRequired?: string[];
+  industryContext?: string;
+  companyInfo?: {
+    name: string;
+    culture?: string;
+    benefits?: string[];
+  };
+  customPrompt?: string;
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    generatedDescription: string;
+    generatedRequirements: string;
+    suggestedSkills: string[];
+    salaryRecommendation: {
+      min: number;
+      max: number;
+      reasoning: string;
+    };
+    seoOptimizations: string[];
+    inclusivityScore: number; // 1-10
+    generationMetadata: {
+      model: string;
+      prompt: string;
+      confidence: number;
+      generatedAt: Date;
+    };
+  };
+}
+```
+
+#### POST `/api/ai/resumes/parse`
+```typescript
+// Request Body (multipart/form-data)
+{
+  resume: File; // PDF, DOC, DOCX
+  extractionLevel?: 'basic' | 'detailed' | 'comprehensive';
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    parsedData: {
+      personalInfo: {
+        name: string;
+        email: string;
+        phone: string;
+        location: string;
+      };
+      experience: {
+        company: string;
+        position: string;
+        duration: string;
+        description: string;
+        skills: string[];
+      }[];
+      education: {
+        institution: string;
+        degree: string;
+        field: string;
+        year: string;
+      }[];
+      skills: {
+        technical: string[];
+        soft: string[];
+        languages: string[];
+        certifications: string[];
+      };
+    };
+
+    aiAnalysis: {
+      overallScore: number; // 1-100
+      experienceLevel: 'entry' | 'mid' | 'senior' | 'executive';
+      strengthAreas: string[];
+      improvementAreas: string[];
+      cultureFitIndicators: string[];
+      salaryEstimate: {
+        min: number;
+        max: number;
+        confidence: number;
+      };
+    };
+
+    jobMatching?: {
+      matchingJobs: {
+        jobId: string;
+        matchScore: number; // 0-1
+        matchingSkills: string[];
+        gapAnalysis: string[];
+      }[];
+    };
+  };
+}
+```
+
+#### POST `/api/ai/candidates/:candidateId/job-match`
+```typescript
+// Request Body
+{
+  jobIds?: string[]; // specific jobs to match against, or all active jobs
+  matchingCriteria?: {
+    skillsWeight: number; // 0-1
+    experienceWeight: number; // 0-1
+    locationWeight: number; // 0-1
+    salaryWeight: number; // 0-1
+  };
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    matches: {
+      jobId: string;
+      jobTitle: string;
+      overallMatch: number; // 0-1
+      matchBreakdown: {
+        skillsMatch: number; // 0-1
+        experienceMatch: number; // 0-1
+        locationMatch: number; // 0-1
+        salaryMatch: number; // 0-1
+      };
+      matchingSkills: string[];
+      missingSkills: string[];
+      recommendations: string[];
+      fitScore: number; // 1-10
+    }[];
+
+    recommendations: {
+      topMatches: string[]; // job IDs
+      improvementSuggestions: string[];
+      alternativeRoles: string[];
+    };
+  };
+}
+```
+
+#### POST `/api/ai/interviews/generate-questions`
+```typescript
+// Request Body
+{
+  jobId: string;
+  candidateId?: string; // for personalized questions
+  interviewType: 'technical' | 'behavioral' | 'situational' | 'culture_fit' | 'mixed';
+  difficulty?: 'easy' | 'medium' | 'hard';
+  numberOfQuestions?: number; // default: 10
+  customFocus?: string[]; // specific areas to focus on
+  previousInterviewFeedback?: string; // to avoid repetition
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    questions: {
+      id: string;
+      category: string;
+      question: string;
+      difficulty: 'easy' | 'medium' | 'hard';
+      expectedAnswer: string;
+      followUpSuggestions: string[];
+      scoringCriteria: string[];
+      timeAllocation: number; // minutes
+    }[];
+
+    interviewGuide: {
+      totalDuration: number; // minutes
+      iceBreakers: string[];
+      closingQuestions: string[];
+      evaluationRubric: {
+        criteria: string;
+        excellent: string;
+        good: string;
+        fair: string;
+        poor: string;
+      }[];
+    };
+
+    generationMetadata: {
+      personalized: boolean;
+      generatedAt: Date;
+      confidence: number;
+    };
+  };
+}
+```
+
+#### POST `/api/ai/interviews/:interviewId/analyze`
+```typescript
+// Request Body
+{
+  transcript?: string; // interview transcript
+  audioFile?: File; // audio recording for transcription
+  feedbackData?: {
+    interviewer: string;
+    responses: {
+      question: string;
+      answer: string;
+      score: number;
+      notes?: string;
+    }[];
+  };
+  analysisType: 'transcript' | 'feedback' | 'comprehensive';
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    transcription?: string; // if audio was provided
+
+    analysis: {
+      overallPerformance: {
+        score: number; // 1-10
+        recommendation: 'strong_hire' | 'hire' | 'no_hire' | 'strong_no_hire';
+        confidence: number; // 0-1
+      };
+
+      skillsAssessment: {
+        skill: string;
+        demonstrated: boolean;
+        proficiencyLevel: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+        examples: string[];
+      }[];
+
+      communicationAnalysis: {
+        clarity: number; // 1-10
+        confidence: number; // 1-10
+        enthusiasm: number; // 1-10
+        professionalism: number; // 1-10
+        overallSentiment: 'very_positive' | 'positive' | 'neutral' | 'negative' | 'very_negative';
+      };
+
+      redFlags: string[];
+      strengths: string[];
+      improvementAreas: string[];
+
+      followUpRecommendations: {
+        nextRoundQuestions: string[];
+        additionalSkillsToTest: string[];
+        referenceCheckFocus: string[];
+      };
+
+      biasDetection: {
+        potentialBiases: string[];
+        inclusivityScore: number; // 1-10
+        recommendations: string[];
+      };
+    };
+  };
+}
+```
+
+#### POST `/api/ai/emails/generate`
+```typescript
+// Request Body
+{
+  templateType: 'application_received' | 'interview_invitation' | 'rejection' | 'offer' | 'follow_up' | 'assessment_invitation';
+  recipientType: 'candidate' | 'internal';
+  context: {
+    candidateName?: string;
+    jobTitle?: string;
+    companyName?: string;
+    interviewDetails?: {
+      date: Date;
+      time: string;
+      location: string;
+      interviewers: string[];
+    };
+    customContext?: string;
+  };
+  tone?: 'professional' | 'friendly' | 'enthusiastic' | 'formal';
+  personalizationLevel?: 'basic' | 'moderate' | 'advanced';
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    generatedEmail: {
+      subject: string;
+      htmlContent: string;
+      textContent: string;
+    };
+    alternatives: {
+      subject: string;
+      content: string;
+      tone: string;
+    }[];
+    personalizationElements: {
+      element: string;
+      reasoning: string;
+    }[];
+    performancePredictions: {
+      estimatedOpenRate: number; // 0-1
+      estimatedResponseRate: number; // 0-1
+      engagementScore: number; // 1-10
+    };
+  };
+}
+```
+
+#### GET `/api/ai/analytics/hiring-insights`
+```typescript
+// Query Parameters
+{
+  timeframe?: '30d' | '90d' | '6m' | '1y';
+  jobIds?: string[];
+  departments?: string[];
+  metrics?: string[]; // specific metrics to include
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    overviewMetrics: {
+      totalApplications: number;
+      averageTimeToHire: number;
+      candidateQualityScore: number; // 1-10
+      diversityMetrics: {
+        genderDistribution: { [key: string]: number };
+        ethnicityDistribution: { [key: string]: number };
+        diversityScore: number; // 0-1
+      };
+    };
+
+    predictiveInsights: {
+      hiringTrends: {
+        nextMonthPredictions: {
+          expectedApplications: number;
+          expectedHires: number;
+          budgetProjection: number;
+        };
+        seasonalPatterns: string[];
+        marketTrends: string[];
+      };
+
+      riskAnalysis: {
+        candidateDropoffRisk: {
+          stage: string;
+          riskLevel: 'low' | 'medium' | 'high';
+          mitigationSuggestions: string[];
+        }[];
+
+        qualityRisk: {
+          description: string;
+          impact: string;
+          recommendations: string[];
+        }[];
+      };
+    };
+
+    recommendations: {
+      processOptimizations: string[];
+      budgetOptimizations: string[];
+      diversityImprovements: string[];
+      candidateExperienceEnhancements: string[];
+    };
+
+    benchmarking: {
+      industryComparison: {
+        metric: string;
+        yourValue: number;
+        industryAverage: number;
+        percentile: number;
+      }[];
+    };
+  };
+}
+```
+
+#### POST `/api/ai/workflows/optimize`
+```typescript
+// Request Body
+{
+  workflowId?: string; // specific workflow to optimize, or company default
+  optimizationGoals?: ('reduce_time' | 'improve_quality' | 'enhance_diversity' | 'reduce_bias' | 'improve_experience')[];
+  currentPerformanceData?: {
+    averageTimeToHire: number;
+    candidateDropoffRates: { [stage: string]: number };
+    hiringManagerSatisfaction: number;
+    candidateExperience: number;
+  };
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    optimizedWorkflow: {
+      stages: {
+        name: string;
+        recommendedDuration: number;
+        optimizations: string[];
+        automationSuggestions: string[];
+      }[];
+
+      overallImprovements: {
+        expectedTimeReduction: number; // percentage
+        expectedQualityImprovement: number; // percentage
+        expectedCostSavings: number; // percentage
+        confidenceScore: number; // 0-1
+      };
+    };
+
+    implementationPlan: {
+      priority: 'high' | 'medium' | 'low';
+      changes: {
+        type: 'stage_modification' | 'automation_addition' | 'process_change';
+        description: string;
+        effort: 'low' | 'medium' | 'high';
+        impact: 'low' | 'medium' | 'high';
+      }[];
+      estimatedImplementationTime: string;
+    };
+
+    complianceCheck: {
+      passed: boolean;
+      issues?: string[];
+      recommendations?: string[];
+    };
+  };
+}
+```
+
+#### POST `/api/ai/chat/assistant`
+```typescript
+// Request Body
+{
+  message: string;
+  context?: {
+    currentPage?: 'jobs' | 'candidates' | 'interviews' | 'analytics';
+    entityId?: string; // job/candidate/interview ID if relevant
+    previousMessages?: {
+      role: 'user' | 'assistant';
+      content: string;
+      timestamp: Date;
+    }[];
+  };
+  assistantType?: 'general' | 'hiring_specialist' | 'data_analyst' | 'process_optimizer';
+}
+
+// Response
+{
+  success: boolean;
+  data: {
+    response: string;
+    suggestedActions?: {
+      action: string;
+      description: string;
+      endpoint?: string;
+      parameters?: object;
+    }[];
+    relatedInsights?: string[];
+    followUpQuestions?: string[];
+    confidence: number; // 0-1
+    conversationId: string;
+  };
+}
+```

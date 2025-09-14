@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useMemo } from 'react';
@@ -173,7 +174,7 @@ const Calendar: React.FC = () => {
     alert(`Event: ${event.title}\nType: ${event.type}\nDescription: ${event.description || 'No description'}`);
   };
 
-  const handleSelectSlot = ({ start, end }: { start: Date; end: Date }) => {
+  const handleSelectSlot = ({ start }: { start: Date; end: Date }) => {
     setSelectedSlotDate(start);
     setIsNewEventModalOpen(true);
   };

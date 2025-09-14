@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import general from "./slices/general";
+// import general from "./slices/general";
 
 
 export const makeStore = () =>
   configureStore({
     reducer: {
-      general,
+      // general,
     },
   });
 
