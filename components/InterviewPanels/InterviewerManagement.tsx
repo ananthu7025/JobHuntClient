@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
+import AddInterviewerModal from './AddInterviewerModal';
 
 const InterviewerManagement: React.FC = () => {
   const [interviewers, setInterviewers] = useState([
@@ -7,9 +9,7 @@ const InterviewerManagement: React.FC = () => {
       name: 'Sarah Kim',
       role: 'Senior Engineering Manager',
       expertise: ['JavaScript', 'React'],
-      timezone: 'PST',
       currentLoad: 2,
-      maxPerDay: 4,
       availability: 'Available',
       availabilityStatus: 'available',
       nextAvailable: '2024-01-16 09:00',
@@ -21,9 +21,7 @@ const InterviewerManagement: React.FC = () => {
       name: 'Mike Chen',
       role: 'Technical Lead',
       expertise: ['Python', 'System Design'],
-      timezone: 'EST',
       currentLoad: 3,
-      maxPerDay: 3,
       availability: 'Fully Booked',
       availabilityStatus: 'busy',
       nextAvailable: '2024-01-17 14:00',
@@ -35,9 +33,7 @@ const InterviewerManagement: React.FC = () => {
       name: 'Lisa Wong',
       role: 'Product Manager',
       expertise: ['Product Strategy', 'User Research'],
-      timezone: 'PST',
       currentLoad: 1,
-      maxPerDay: 5,
       availability: 'Available',
       availabilityStatus: 'available',
       nextAvailable: '2024-01-16 10:00',
@@ -50,6 +46,9 @@ const InterviewerManagement: React.FC = () => {
   const [availabilityFilter, setAvailabilityFilter] = useState('All Status');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
   const toggleAvailability = (interviewerId: string) => {
     setInterviewers(prev => prev.map(interviewer => {
@@ -88,6 +87,63 @@ const InterviewerManagement: React.FC = () => {
   const availableCount = interviewers.filter(i => i.availabilityStatus === 'available').length;
   const totalCount = interviewers.length;
 
+  const handleAddInterviewer = (interviewerData: any) => {
+    const newInterviewer = {
+      ...interviewerData,
+      id: interviewerData.id || Date.now().toString(),
+    };
+    setInterviewers(prev => [...prev, newInterviewer]);
+    setIsAddModalOpen(false);
+  };
+
+  const toggleDropdown = (interviewerId: string, event: React.MouseEvent) => {
+    console.log('Toggle dropdown for:', interviewerId, 'Current open:', openDropdownId);
+
+    if (openDropdownId === interviewerId) {
+      setOpenDropdownId(null);
+    } else {
+      const rect = (event.target as HTMLElement).getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.right - 180 + window.scrollX // Align right edge
+      });
+      setOpenDropdownId(interviewerId);
+    }
+  };
+
+  const handleScheduleInterview = (interviewer: any) => {
+    console.log('Schedule interview for:', interviewer.name);
+    setOpenDropdownId(null);
+    // TODO: Implement schedule interview functionality
+  };
+
+  const handleEditProfile = (interviewer: any) => {
+    console.log('Edit profile for:', interviewer.name);
+    setOpenDropdownId(null);
+    // TODO: Implement edit profile functionality
+  };
+
+  const handleSendEmail = (interviewer: any) => {
+    console.log('Send email to:', interviewer.email);
+    setOpenDropdownId(null);
+    // TODO: Implement send email functionality
+  };
+
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.action-dropdown')) {
+        setOpenDropdownId(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="interviewer-management-section">
       <div className="main-table-section">
@@ -97,7 +153,10 @@ const InterviewerManagement: React.FC = () => {
               <h2>Interviews</h2>
               <p>Manage interview scheduling and feedback</p>
             </div>
-            <button className="add-job-btn">
+            <button
+              className="add-job-btn"
+              onClick={() => setIsAddModalOpen(true)}
+            >
               <i className="fas fa-plus"></i>Add Interviewer
             </button>
           </div>
@@ -163,8 +222,8 @@ const InterviewerManagement: React.FC = () => {
             </div>
           </div>
           
-          <div className="jobs-table-container">
-            <table className="jobs-table">
+          <div className="jobs-table-container" style={{ overflow: 'visible' }}>
+            <table className="jobs-table" style={{ overflow: 'visible' }}>
               <thead>
                 <tr>
                   <th>Interviewer</th>
@@ -234,23 +293,16 @@ const InterviewerManagement: React.FC = () => {
                        
                       </div>
                     </td>
-                    <td>
-                      <div className="table-actions">
-                        <div className="action-dropdown">
-                          <button className="action-btn dropdown-toggle" title="Actions">
+                    <td style={{ position: 'relative', overflow: 'visible' }}>
+                      <div className="table-actions" style={{ overflow: 'visible' }}>
+                        <div className="action-dropdown" style={{ position: 'relative', overflow: 'visible' }}>
+                          <button
+                            className="action-btn dropdown-toggle"
+                            title="Actions"
+                            onClick={(e) => toggleDropdown(interviewer.id, e)}
+                          >
                             <i className="fas fa-ellipsis-v"></i>
                           </button>
-                          <div className="dropdown-menu">
-                            <button className="dropdown-item">
-                              <i className="fas fa-calendar"></i> Schedule Interview
-                            </button>
-                            <button className="dropdown-item">
-                              <i className="fas fa-edit"></i> Edit Profile
-                            </button>
-                            <button className="dropdown-item">
-                              <i className="fas fa-envelope"></i> Send Email
-                            </button>
-                          </div>
                         </div>
                       </div>
                     </td>
@@ -311,6 +363,91 @@ const InterviewerManagement: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Dropdown Menu - Positioned absolutely to viewport */}
+      {openDropdownId && (
+        <div
+          className="dropdown-menu"
+          style={{
+            position: 'fixed',
+            top: dropdownPosition.top,
+            left: dropdownPosition.left,
+            backgroundColor: 'red',
+            border: '2px solid black',
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            minWidth: '180px',
+            zIndex: 9999,
+            padding: '8px 0'
+          }}
+        >
+          <div style={{padding: '10px', color: 'white', fontWeight: 'bold'}}>DROPDOWN OPEN</div>
+          <button
+            className="dropdown-item"
+            onClick={() => handleScheduleInterview(interviewers.find(i => i.id === openDropdownId))}
+            style={{
+              width: '100%',
+              padding: '8px 16px',
+              border: 'none',
+              background: 'none',
+              textAlign: 'left',
+              cursor: 'pointer',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: 'white'
+            }}
+          >
+            <i className="fas fa-calendar"></i> Schedule Interview
+          </button>
+          <button
+            className="dropdown-item"
+            onClick={() => handleEditProfile(interviewers.find(i => i.id === openDropdownId))}
+            style={{
+              width: '100%',
+              padding: '8px 16px',
+              border: 'none',
+              background: 'none',
+              textAlign: 'left',
+              cursor: 'pointer',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: 'white'
+            }}
+          >
+            <i className="fas fa-edit"></i> Edit Profile
+          </button>
+          <button
+            className="dropdown-item"
+            onClick={() => handleSendEmail(interviewers.find(i => i.id === openDropdownId))}
+            style={{
+              width: '100%',
+              padding: '8px 16px',
+              border: 'none',
+              background: 'none',
+              textAlign: 'left',
+              cursor: 'pointer',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: 'white'
+            }}
+          >
+            <i className="fas fa-envelope"></i> Send Email
+          </button>
+        </div>
+      )}
+
+      {/* Add Interviewer Modal */}
+      <AddInterviewerModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddInterviewer}
+      />
 
       <div className="enhanced-sidebar">
         <div className="sidebar-widget">

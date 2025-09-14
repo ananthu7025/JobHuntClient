@@ -1,6 +1,11 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState } from 'react';
+import ViewInterviewModal from './ViewInterviewModal';
 
 const InterviewSchedule: React.FC = () => {
+  const [selectedInterview, setSelectedInterview] = useState(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+
   const upcomingInterviews = [
     {
       id: 1,
@@ -63,6 +68,16 @@ const InterviewSchedule: React.FC = () => {
     }
   };
 
+  const handleViewInterview = (interview: any) => {
+    setSelectedInterview(interview);
+    setIsViewModalOpen(true);
+  };
+
+  const handleCloseViewModal = () => {
+    setIsViewModalOpen(false);
+    setSelectedInterview(null);
+  };
+
   return (
     <div className="interview-schedule-section">
       <div className="upcoming-interviews">
@@ -121,7 +136,11 @@ const InterviewSchedule: React.FC = () => {
                   </td>
                   <td>
                     <div className="table-actions">
-                      <button className="action-btn view-btn" title="View">
+                      <button
+                        className="action-btn view-btn"
+                        title="View"
+                        onClick={() => handleViewInterview(interview)}
+                      >
                         <i className="fas fa-eye"></i>
                       </button>
                       <button className="action-btn delete-btn" title="Delete">
@@ -135,6 +154,13 @@ const InterviewSchedule: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {/* View Interview Modal */}
+      <ViewInterviewModal
+        isOpen={isViewModalOpen}
+        onClose={handleCloseViewModal}
+        interview={selectedInterview}
+      />
     </div>
   );
 };

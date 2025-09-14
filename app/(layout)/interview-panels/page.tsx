@@ -34,19 +34,7 @@ const InterviewPanelsPage: React.FC = () => {
           <h1>Interview Panel Availability</h1>
           <p>Manage interviewer schedules and optimize interview scheduling</p>
         </div>
-        <div className="header-buttons">
-          <button className="view-toggle">
-            <i className="fas fa-cog"></i>
-          </button>
-          <button className="add-job-btn">
-            <i className="fas fa-plus"></i>
-            Bulk Update
-          </button>
-          <button className="add-job-btn">
-            <i className="fas fa-plus"></i>
-            Add Availability
-          </button>
-        </div>
+       
       </div>
 
       {/* Tab Navigation */}
