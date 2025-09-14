@@ -1,9 +1,14 @@
 "use client";
+
 import React from "react";
-import TemplateManagement from "@/components/Templates";
+import EmailTemplates from "@/components/EmailTemplates";
 
 const TemplatesPage: React.FC = () => {
-  return <TemplateManagement />;
+  return (
+    <div className="page-wrapper">
+      <EmailTemplates />
+    </div>
+  );
 };
 
 export default TemplatesPage;
